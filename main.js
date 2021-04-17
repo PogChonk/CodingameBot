@@ -1,6 +1,6 @@
 const Discord = require("discord.js")
 const prefix = "cg!"
-const token = "ODEwOTg4OTM1ODM2MDczOTk0.YCrqTQ.2v4o-RZe2ZHayD_EjBBVSZzcIEA"
+const token = "1ODEwOTg4OTM1ODM2MDczOTk0.YCrqTQ.07H4YPvkjJTUD7QK9b7gvsEZeo0"
 const bot = new Discord.Client()
 
 const https = require('https')
