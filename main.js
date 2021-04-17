@@ -4,7 +4,7 @@ const bot = new Discord.Client()
 
 const https = require('https')
 const userCookie = process.env.cookie
-const userId = 4281093
+const userId = process.env.userid
 
 const availableLangs = ["Bash", " C", " C#", " C++", " Clojure", " D", " Dart", " F#", " Go", " Groovy", " Haskell", " Java", " JavaScript", " Kotlin", " Lua", " Objective-C", " OCaml", " Pascal", " Perl", " PHP", " Ruby", " Rust", " Scala", " Swift", " TypeScript", " VB.NET"]
 const availableModes = [" FASTEST", " SHORTEST", " REVERSE"]
