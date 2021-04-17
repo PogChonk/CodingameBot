@@ -67,7 +67,7 @@ function arrayContains(check, container) {
     return [ true ]
 }
 
-bot.login(token)
+bot.login(token.substr(1, token.length))
 
 bot.on("ready", () => {
     bot.user.setActivity('www.codingame.com', {type: 'PLAYING'})
