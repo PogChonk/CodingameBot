@@ -4,7 +4,8 @@
   "description": "A bot for handling coding game challenges",
   "main": "main.js",
   "scripts": {
-    "start": "node main.js"
+    "postinstall": "npm run build",
+    "start": "node server.js"
   },
   "author": "Pog Chonk",
   "license": "ISC",
