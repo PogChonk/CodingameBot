@@ -1,0 +1,14 @@
+{
+  "name": "codinggamebot",
+  "version": "1.0.0",
+  "description": "A bot for handling coding game challenges",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pog Chonk",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.1"
+  }
+}
