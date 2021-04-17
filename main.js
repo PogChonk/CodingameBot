@@ -38,9 +38,7 @@ function createClash(message, languages, modes) {
             let parsedData = JSON.parse(jsonData)
 
             if (parsedData.publicHandle != null) {
-                message.reply(`Created a lobby!\nJoin via ${baseLink + parsedData.publicHandle}\nMode(s): ${modes.toString()}\nLanguage(s): ${languages.toString()}`).then(msg => {
-                    msg.suppressEmbeds(true)
-                })
+                message.reply(`Created a lobby!\nJoin via ${baseLink + parsedData.publicHandle}\nMode(s): ${modes.toString()}\nLanguage(s): ${languages.toString()}\n<@&792963654709805087>`)
             } else {
                 message.reply("Something went wrong! Make sure there are no spaces between the commas for the languages and modes and double-check your spelling (Case-sensitive for the languages)!")
                 console.log(parsedData)
