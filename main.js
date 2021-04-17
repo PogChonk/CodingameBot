@@ -1,5 +1,6 @@
 const Discord = require("discord.js")
 const prefix = "cg!"
+const token = process.env.cookie
 const bot = new Discord.Client()
 
 const https = require('https')
@@ -75,6 +76,7 @@ bot.on("message", message => {
     let cmd = args[0]
 
     if (!cmd.startsWith(prefix)) return
+    if (!message.member.roles.cache.some(role => role.name === "Codingame Host")) return
 
     switch(cmd.substring(prefix.length).toLowerCase()) {
         case "create":
