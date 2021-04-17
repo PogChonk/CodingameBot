@@ -4,7 +4,7 @@
   "description": "A bot for handling coding game challenges",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ."
   },
   "author": "Pog Chonk",
   "license": "ISC",
