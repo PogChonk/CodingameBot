@@ -7,6 +7,17 @@ const https = require('https')
 const userCookie = process.env.cookie
 const userId = process.env.userid
 
+const codingameLogo = "https://images.ctfassets.net/3ouphkrynjol/X0zs5QUToOY4OAssWIKiC/45499972ddf75d54b0b59b1a07594805/codingame.com.png"
+const baseLink = "https://www.codingame.com/clashofcode/clash/"
+
+const lobbyInfo = {
+    host: "",
+    url: "",
+    date: 0,
+    modes: [],
+    langs: []
+}
+
 const availableLangs = ["Bash", " C", " C#", " C++", " Clojure", " D", " Dart", " F#", " Go", " Groovy", " Haskell", " Java", " JavaScript", " Kotlin", " Lua", " Objective-C", " OCaml", " Pascal", " Perl", " PHP", " Ruby", " Rust", " Scala", " Swift", " TypeScript", " VB.NET"]
 const availableModes = [" FASTEST", " SHORTEST", " REVERSE"]
 
@@ -32,14 +43,36 @@ function createClash(message, languages, modes) {
         }
     }
 
-    let baseLink = "https://www.codingame.com/clashofcode/clash/"
-
     let req = https.request(options, result => {
         result.on("data", jsonData => {
             let parsedData = JSON.parse(jsonData)
 
             if (parsedData.publicHandle != null) {
-                message.reply(`Created a lobby!\nJoin via ${baseLink + parsedData.publicHandle}\nMode(s): ${modes.toString()}\nLanguage(s): ${languages.toString()}\n<@&792963654709805087>`)
+                lobbyInfo.date = new Date().getTime()
+                lobbyInfo.host = message.member.nickname || message.author.username
+                lobbyInfo.url = baseLink + parsedData.publicHandle
+                lobbyInfo.modes = modes
+                lobbyInfo.langs = languages
+
+                for (let i = 0; i < lobbyInfo.modes.length; i++) {
+                    let element = modes[i]
+                    let firstChar = element.substr(0, 1)
+                    let restChars = element.substr(1, element.length)
+                    modes[i] = firstChar.toUpperCase() + restChars.toLowerCase()
+                }
+
+                let linkEmbed = new Discord.MessageEmbed()
+                .setTitle("Codingame Lobby")
+                .addField("Hosted by", lobbyInfo.host)
+                .addField("Join via", `*[Codingame](${lobbyInfo.url})*`)
+                .addField("\u200B", "\u200B")
+                .addField("Mode(s)", lobbyInfo.modes.toString(), true)
+                .addField("Languages(s)", lobbyInfo.langs.toString(), true)
+                .setColor("#00e5ff")
+                .setThumbnail(codingameLogo)
+                .setTimestamp(lobbyInfo.date)
+
+                message.channel.send(linkEmbed).then(() => message.channel.send("<@&833178383914631168>"))
             } else {
                 message.reply("Something went wrong! Make sure there are no spaces between the commas for the languages and modes and double-check your spelling (Case-sensitive for the languages)!")
                 console.log(parsedData)
@@ -113,6 +146,23 @@ bot.on("message", message => {
         case "help": 
             message.channel.send(helpEmbed)
             break
+        case "lobby":
+            if (lobbyInfo.host && lobbyInfo.url) {
+                let lobbyEmbed = new Discord.MessageEmbed()
+                .setTitle("Codingame Lobby")
+                .addField("Hosted by", lobbyInfo.host)
+                .addField("Join via", `*[Codingame](${lobbyInfo.url})*`)
+                .addField("\u200B", "\u200B")
+                .addField("Mode(s)", lobbyInfo.modes.toString(), true)
+                .addField("Languages(s)", lobbyInfo.langs.toString(), true)
+                .setColor("#00e5ff")
+                .setThumbnail(codingameLogo)
+                .setTimestamp(lobbyInfo.date)
+
+                message.reply(lobbyEmbed)
+            } else {
+                message.reply("There's no active lobby!")
+            }
         default:
             break
     }
