@@ -72,7 +72,7 @@ function createClash(message, languages, modes) {
                 .setThumbnail(codingameLogo)
                 .setTimestamp(lobbyInfo.date)
 
-                message.channel.send(linkEmbed).then(() => message.channel.send("<@&833178383914631168>"))
+                message.channel.send(linkEmbed).then(() => message.channel.send("<@&792963654709805087>"))
             } else {
                 message.reply("Something went wrong! Make sure there are no spaces between the commas for the languages and modes and double-check your spelling (Case-sensitive for the languages)!")
                 console.log(parsedData)
