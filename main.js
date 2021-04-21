@@ -23,11 +23,13 @@ const availableModes = [" FASTEST", " SHORTEST", " REVERSE"]
 
 const helpEmbed = new Discord.MessageEmbed()
             .setColor("#00e5ff")
-            .setTitle("How to generate a link")
-            .addField("Command", "cg!create languages<array> modes<array>")
-            .addField("Example usage", "cg!create Lua,C++ Fastest,Shortest")
+            .setTitle("Bot Help")
+            .addField("Commands", "create, lobby")
+            .addField("Usages", "cg!create languages<array> modes<array>\nCreates a new Codingame lobby with the specified language(s) and mode(s).\n\ncg!lobby\nCheck if there's a current game going on.")
+            .addField("Examples", "cg!create Lua,C++ Fastest,Reverse\ncg!lobby")
             .addField("\u200B", "\u200B")
             .addField("Options", `**Modes**: ${availableModes.toString()}\n\n**Languages**: ${availableLangs.toString()}`)
+            .setTimestamp(new Date().getTime())
 
 function createClash(message, languages, modes) {
     let data = JSON.stringify([userId, {SHORT: true}, languages, modes])
