@@ -1,6 +1,6 @@
 const Discord = require("discord.js")
 const prefix = "cg!"
-const token = process.env.cookie
+const token = process.env.token
 const bot = new Discord.Client()
 
 const https = require('https')
@@ -18,8 +18,8 @@ const lobbyInfo = {
     langs: []
 }
 
-const availableLangs = ["Bash", " C", " C#", " C++", " Clojure", " D", " Dart", " F#", " Go", " Groovy", " Haskell", " Java", " JavaScript", " Kotlin", " Lua", " Objective-C", " OCaml", " Pascal", " Perl", " PHP", " Ruby", " Rust", " Scala", " Swift", " TypeScript", " VB.NET"]
-const availableModes = [" FASTEST", " SHORTEST", " REVERSE"]
+const availableLangs = ["Bash", "C", "C#", "C++", "Clojure", "D", "Dart", "F#", "Go", "Groovy", "Haskell", "Java", "JavaScript", "Kotlin", "Lua", "Objective-C", "OCaml", "Pascal", "Perl", "PHP", "Ruby", "Rust", "Scala", "Swift", "TypeScript", "VB.NET"]
+const availableModes = ["FASTEST", "SHORTEST", "REVERSE"]
 
 const helpEmbed = new Discord.MessageEmbed()
             .setColor("#00e5ff")
@@ -28,7 +28,7 @@ const helpEmbed = new Discord.MessageEmbed()
             .addField("Usages", "cg!create languages<array> modes<array>\nCreates a new Codingame lobby with the specified language(s) and mode(s).\n\ncg!lobby\nCheck if there's a current game going on.")
             .addField("Examples", "cg!create Lua,C++ Fastest,Reverse\ncg!lobby")
             .addField("\u200B", "\u200B")
-            .addField("Options", `**Modes**: ${availableModes.toString()}\n\n**Languages**: ${availableLangs.toString()}`)
+            .addField("Options", `**Modes**: ${availableModes.join(", ")}\n\n**Languages**: ${availableLangs.join(", ")}`)
             .setTimestamp(new Date().getTime())
 
 function createClash(message, languages, modes) {
@@ -68,13 +68,21 @@ function createClash(message, languages, modes) {
                 .addField("Hosted by", lobbyInfo.host)
                 .addField("Join via", `*[Codingame](${lobbyInfo.url})*`)
                 .addField("\u200B", "\u200B")
-                .addField("Mode(s)", lobbyInfo.modes.toString(), true)
-                .addField("Languages(s)", lobbyInfo.langs.toString(), true)
+                .addField("Mode(s)", lobbyInfo.modes.join(", "), true)
+                .addField("Languages(s)", lobbyInfo.langs.join(", "), true)
                 .setColor("#00e5ff")
                 .setThumbnail(codingameLogo)
                 .setTimestamp(lobbyInfo.date)
 
-                message.channel.send(linkEmbed).then(() => message.channel.send("<@&792963654709805087>"))
+                message.channel.send(linkEmbed).then(() => {
+                    message.guild.roles.fetch("792963654709805087").then(role => {
+                        role.setMentionable(true).then(() => {
+                            message.channel.send("<@&792963654709805087>").then(() => {
+                                role.setMentionable(false)
+                            })
+                        })
+                    })
+                })
             } else {
                 message.reply("Something went wrong! Make sure there are no spaces between the commas for the languages and modes and double-check your spelling (Case-sensitive for the languages)!")
                 console.log(parsedData)
@@ -93,9 +101,7 @@ function createClash(message, languages, modes) {
 
 function arrayContains(check, container) {
     for (let n = 0; n < check.length; n++) {
-        if (!container.includes(check[n])) {
-            if (!container.includes(" " + check[n])) return [ false, check[n] ]
-        }
+        if (!container.includes(check[n])) return [ false, check[n] ]
     }
     return [ true ]
 }
@@ -111,10 +117,11 @@ bot.on("message", message => {
     let cmd = args[0]
 
     if (!cmd.startsWith(prefix)) return
-    if (!message.member.roles.cache.some(role => role.name === "Codingame Host")) return
 
     switch(cmd.substring(prefix.length).toLowerCase()) {
         case "create":
+            if (!message.member.roles.cache.some(role => role.name === "Codingame Host")) return
+
             if (!args[1]) {
                 message.reply("No languages specified.")
                 return
@@ -155,8 +162,8 @@ bot.on("message", message => {
                 .addField("Hosted by", lobbyInfo.host)
                 .addField("Join via", `*[Codingame](${lobbyInfo.url})*`)
                 .addField("\u200B", "\u200B")
-                .addField("Mode(s)", lobbyInfo.modes.toString(), true)
-                .addField("Languages(s)", lobbyInfo.langs.toString(), true)
+                .addField("Mode(s)", lobbyInfo.modes.join(", "), true)
+                .addField("Languages(s)", lobbyInfo.langs.join(", "), true)
                 .setColor("#00e5ff")
                 .setThumbnail(codingameLogo)
                 .setTimestamp(lobbyInfo.date)
