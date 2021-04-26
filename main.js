@@ -18,7 +18,7 @@ const lobbyInfo = {
     langs: []
 }
 
-const availableLangs = ["Bash", "C", "C#", "C++", "Clojure", "D", "Dart", "F#", "Go", "Groovy", "Haskell", "Java", "JavaScript", "Kotlin", "Lua", "Objective-C", "OCaml", "Pascal", "Perl", "PHP", "Ruby", "Rust", "Scala", "Swift", "TypeScript", "VB.NET"]
+const availableLangs = ["Bash", "C", "C#", "C++", "Clojure", "D", "Dart", "F#", "Go", "Groovy", "Haskell", "Java", "Javascript", "Kotlin", "Lua", "ObjectiveC", "OCaml", "Pascal", "Perl", "PHP", "Ruby", "Rust", "Scala", "Swift", "TypeScript", "VB.NET", "Python3"]
 const availableModes = ["FASTEST", "SHORTEST", "REVERSE"]
 
 const helpEmbed = new Discord.MessageEmbed()
@@ -76,6 +76,7 @@ function createClash(message, languages, modes) {
 
                 message.channel.send(linkEmbed).then(() => {
                     message.guild.roles.fetch("792963654709805087").then(role => {
+                        if (!role) return;
                         role.setMentionable(true).then(() => {
                             message.channel.send("<@&792963654709805087>").then(() => {
                                 role.setMentionable(false)
