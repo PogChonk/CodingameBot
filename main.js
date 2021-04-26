@@ -15,7 +15,12 @@ const lobbyInfo = {
     url: "",
     date: 0,
     modes: [],
-    langs: []
+    langs: [],
+    handle: "",
+    online: {
+        started: false,
+        finished: false
+    }
 }
 
 const availableLangs = ["Bash", "C", "C#", "C++", "Clojure", "D", "Dart", "F#", "Go", "Groovy", "Haskell", "Java", "Javascript", "Kotlin", "Lua", "ObjectiveC", "OCaml", "Pascal", "Perl", "PHP", "Ruby", "Rust", "Scala", "Swift", "TypeScript", "VB.NET", "Python3"]
@@ -55,6 +60,9 @@ function createClash(message, languages, modes) {
                 lobbyInfo.url = baseLink + parsedData.publicHandle
                 lobbyInfo.modes = modes
                 lobbyInfo.langs = languages
+                lobbyInfo.handle = parsedData.publicHandle
+                lobbyInfo.online.finished = false
+                lobbyInfo.online.started = false
 
                 for (let i = 0; i < lobbyInfo.modes.length; i++) {
                     let element = modes[i]
@@ -93,6 +101,40 @@ function createClash(message, languages, modes) {
 
     req.on("error", e => {
         message.reply("There was an error creating a private Clash of Code lobby!")
+        console.log(e)
+    })
+
+    req.write(data)
+    req.end()
+}
+
+function getClashInfo(publicHandle) {
+    let data = JSON.stringify([publicHandle])
+
+    let options = {
+        hostname: "www.codingame.com",
+        path: "/services/ClashOfCode/findClashByHandle",
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Content-Length": data.length,
+            "Cookie": userCookie
+        }
+    }
+
+    let req = https.request(options, result => {
+        result.on("data", jsonData => {
+            let parsedData = JSON.parse(jsonData)
+
+            if (parsedData.publicHandle != null) {
+                lobbyInfo.online.started = parsedData.started
+                lobbyInfo.online.finished = parsedData.finished
+            }
+        })
+    })
+
+    req.on("error", e => {
+        message.reply("There was an error retrieving the private Clash of Code information!")
         console.log(e)
     })
 
@@ -158,18 +200,23 @@ bot.on("message", message => {
             break
         case "lobby":
             if (lobbyInfo.host && lobbyInfo.url) {
-                let lobbyEmbed = new Discord.MessageEmbed()
-                .setTitle("Codingame Lobby")
-                .addField("Hosted by", lobbyInfo.host)
-                .addField("Join via", `*[Codingame](${lobbyInfo.url})*`)
-                .addField("\u200B", "\u200B")
-                .addField("Mode(s)", lobbyInfo.modes.join(", "), true)
-                .addField("Languages(s)", lobbyInfo.langs.join(", "), true)
-                .setColor("#00e5ff")
-                .setThumbnail(codingameLogo)
-                .setTimestamp(lobbyInfo.date)
+                getClashInfo(lobbyInfo.handle)
+                if ((!lobbyInfo.online.started && !lobbyInfo.online.finished) || (lobbyInfo.online.started && !lobbyInfo.online.finished)) {
+                    let lobbyEmbed = new Discord.MessageEmbed()
+                    .setTitle("Codingame Lobby")
+                    .addField("Hosted by", lobbyInfo.host)
+                    .addField("Join via", `*[Codingame](${lobbyInfo.url})*`)
+                    .addField("\u200B", "\u200B")
+                    .addField("Mode(s)", lobbyInfo.modes.join(", "), true)
+                    .addField("Languages(s)", lobbyInfo.langs.join(", "), true)
+                    .setColor("#00e5ff")
+                    .setThumbnail(codingameLogo)
+                    .setTimestamp(lobbyInfo.date)
 
-                message.reply(lobbyEmbed)
+                    message.reply(lobbyEmbed)
+                } else {
+                    message.reply("There's no active lobby!")
+                }
             } else {
                 message.reply("There's no active lobby!")
             }
