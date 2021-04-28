@@ -108,7 +108,7 @@ function createClash(message, languages, modes) {
     req.end()
 }
 
-function getClashInfo(publicHandle) {
+function getClashInfo(message, publicHandle) {
     let data = JSON.stringify([publicHandle])
 
     let options = {
@@ -144,7 +144,9 @@ function getClashInfo(publicHandle) {
 
 function arrayContains(check, container) {
     for (let n = 0; n < check.length; n++) {
-        if (!container.includes(check[n])) return [ false, check[n] ]
+        if (!container.includes(check[n])) {
+            return [ false, check[n] ]
+        }
     }
     return [ true ]
 }
@@ -166,19 +168,16 @@ bot.on("message", message => {
             if (!message.member.roles.cache.some(role => role.name === "Codingame Host")) return
 
             if (!args[1]) {
-                message.reply("No languages specified.")
+                message.reply("No language(s) specified.")
                 return
             }
             if (!args[2]) {
-                message.reply("No modes specified.")
+                message.reply("No mode(s) specified.")
                 return
             }
 
-            let languages = []
-            let modes = []
-
-            languages = args[1].split(",")
-            modes = (args[2].toUpperCase()).split(",")
+            let languages = args[1].split(",")
+            let modes = (args[2].toUpperCase()).split(",")
 
             let [ langBool, langElement ] = arrayContains(languages, availableLangs)
             if (!langBool) {
@@ -193,14 +192,13 @@ bot.on("message", message => {
             }
 
             createClash(message, languages, modes)
-
             break
         case "help": 
             message.channel.send(helpEmbed)
             break
         case "lobby":
             if (lobbyInfo.host && lobbyInfo.url) {
-                getClashInfo(lobbyInfo.handle)
+                getClashInfo(message, lobbyInfo.handle)
                 if ((!lobbyInfo.online.started && !lobbyInfo.online.finished) || (lobbyInfo.online.started && !lobbyInfo.online.finished)) {
                     let lobbyEmbed = new Discord.MessageEmbed()
                     .setTitle("Codingame Lobby")
@@ -220,6 +218,7 @@ bot.on("message", message => {
             } else {
                 message.reply("There's no active lobby!")
             }
+            break
         default:
             break
     }
