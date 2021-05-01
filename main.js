@@ -36,7 +36,7 @@ const helpEmbed = new Discord.MessageEmbed()
             .addField("Options", `**Modes**: ${availableModes.join(", ")}\n\n**Languages**: ${availableLangs.join(", ")}`)
             .setTimestamp(new Date().getTime())
 
-function createClash(message, languages, modes) {
+function createClash(message, languages, modes, ping) {
     let data = JSON.stringify([userId, {SHORT: true}, languages, modes])
 
     let options = {
@@ -83,14 +83,16 @@ function createClash(message, languages, modes) {
                 .setTimestamp(lobbyInfo.date)
 
                 message.channel.send(linkEmbed).then(() => {
-                    message.guild.roles.fetch("792963654709805087").then(role => {
-                        if (!role) return;
-                        role.setMentionable(true).then(() => {
-                            message.channel.send("<@&792963654709805087>").then(() => {
-                                role.setMentionable(false)
+                    if (ping) {
+                        message.guild.roles.fetch("792963654709805087").then(role => {
+                            if (!role) return;
+                            role.setMentionable(true).then(() => {
+                                message.channel.send("<@&792963654709805087>").then(() => {
+                                    role.setMentionable(false)
+                                })
                             })
                         })
-                    })
+                    }
                 })
             } else {
                 message.reply("Something went wrong! Make sure there are no spaces between the commas for the languages and modes and double-check your spelling (Case-sensitive for the languages)!")
@@ -176,6 +178,15 @@ bot.on("message", message => {
                 return
             }
 
+            let ping = false
+            args[3] = args[3].toLowerCase()
+
+            if (args[3] === true) {
+                ping = true
+            } else {
+                ping = false
+            }
+
             let languages = args[1].split(",")
             let modes = (args[2].toUpperCase()).split(",")
 
@@ -191,7 +202,7 @@ bot.on("message", message => {
                 return
             }
 
-            createClash(message, languages, modes)
+            createClash(message, languages, modes, ping)
             break
         case "help": 
             message.channel.send(helpEmbed)
