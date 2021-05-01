@@ -181,7 +181,7 @@ bot.on("message", message => {
             let ping = false
             args[3] = (args[3] && args[3].toLowerCase()) || ""
 
-            if (args[3] === true) {
+            if (args[3] == "true") {
                 ping = true
             } else {
                 ping = false
@@ -202,6 +202,7 @@ bot.on("message", message => {
                 return
             }
 
+            console.log(ping)
             createClash(message, languages, modes, ping)
             break
         case "help": 
