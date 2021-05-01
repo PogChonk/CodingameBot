@@ -202,7 +202,6 @@ bot.on("message", message => {
                 return
             }
 
-            console.log(ping)
             createClash(message, languages, modes, ping)
             break
         case "help": 
