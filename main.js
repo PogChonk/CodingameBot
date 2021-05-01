@@ -179,7 +179,7 @@ bot.on("message", message => {
             }
 
             let ping = false
-            args[3] = args[3].toLowerCase() || ""
+            args[3] = (args[3] && args[3].toLowerCase()) || ""
 
             if (args[3] === true) {
                 ping = true
