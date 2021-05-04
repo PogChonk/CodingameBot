@@ -20,6 +20,7 @@ const lobbyInfo = {
     lobby: {
         playerCount: 0,
         interval: null,
+        count: 1000,
         timeLeft: 300000
     },
     online: {
@@ -28,8 +29,8 @@ const lobbyInfo = {
     }
 }
 
-const availableLangs = ["Bash", "C", "C#", "C++", "Clojure", "D", "Dart", "F#", "Go", "Groovy", "Haskell", "Java", "Javascript", "Kotlin", "Lua", "ObjectiveC", "OCaml", "Pascal", "Perl", "PHP", "Ruby", "Rust", "Scala", "Swift", "TypeScript", "VB.NET", "Python3", "All"]
-const availableModes = ["FASTEST", "SHORTEST", "REVERSE", "ALL"]
+const availableLangs = ["Bash", "C", "C#", "C++", "Clojure", "D", "Dart", "F#", "Go", "Groovy", "Haskell", "Java", "Javascript", "Kotlin", "Lua", "ObjectiveC", "OCaml", "Pascal", "Perl", "PHP", "Ruby", "Rust", "Scala", "Swift", "TypeScript", "VB.NET", "Python3"]
+const availableModes = ["FASTEST", "SHORTEST", "REVERSE"]
 
 const helpEmbed = new Discord.MessageEmbed()
             .setColor("#00e5ff")
@@ -103,13 +104,14 @@ function leaveClash() {
 
     req.write(data)
     req.end()
+
+    clearInterval(lobbyInfo.lobby.interval)
+    lobbyInfo.lobby.interval = null
+    lobbyInfo.lobby.timeLeft = 300000
 }
 
 function createClash(message, languages, modes, ping) {
     let data = JSON.stringify([userId, {SHORT: true}, languages, modes])
-
-    if (languages[1] == "All") languages = []
-    if (modes[1] == "ALL") modes = ["FASTEST", "SHORTEST", "REVERSE"]
 
     let options = {
         hostname: "www.codingame.com",
@@ -170,14 +172,20 @@ function createClash(message, languages, modes, ping) {
                 if (lobbyInfo.lobby.interval) {
                     clearInterval(lobbyInfo.lobby.interval)
                     lobbyInfo.lobby.interval = null
+                    lobbyInfo.lobby.timeLeft = 300000
                 }
 
-                lobbyInfo.interval = setInterval(() => {
+                lobbyInfo.lobby.interval = setInterval(() => {
                     getClashPlayers()
-                    if (lobbyInfo.playerCount > 1) {
+                    if (lobbyInfo.lobby.playerCount > 1) {
                         leaveClash()
                     }
-                }, 5000)
+                    if (lobbyInfo.lobby.timeLeft <= 0) {
+                        leaveClash()
+                    }
+                    lobbyInfo.lobby.timeLeft -= lobbyInfo.lobby.count
+                    console.log(lobbyInfo.lobby.timeLeft)
+                }, lobbyInfo.lobby.count)
             } else {
                 message.reply("Something went wrong! Make sure there are no spaces between the commas for the languages and modes and double-check your spelling (Case-sensitive for the languages)!")
                 console.log(parsedData)
