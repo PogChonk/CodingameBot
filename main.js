@@ -189,7 +189,6 @@ function createClash(message, languages, modes, ping) {
                         return
                     }
                     lobbyInfo.lobby.timeLeft -= lobbyInfo.lobby.count
-                    console.log(lobbyInfo.lobby.timeLeft)
                 }, lobbyInfo.lobby.count)
             } else {
                 message.reply("Something went wrong! Make sure there are no spaces between the commas for the languages and modes and double-check your spelling (Case-sensitive for the languages)!")
