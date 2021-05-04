@@ -108,6 +108,8 @@ function leaveClash() {
     clearInterval(lobbyInfo.lobby.interval)
     lobbyInfo.lobby.interval = null
     lobbyInfo.lobby.timeLeft = 300000
+    lobbyInfo.url = ""
+    lobbyInfo.host = ""
 }
 
 function createClash(message, languages, modes, ping) {
