@@ -18,6 +18,7 @@ const lobbyInfo = {
     langs: [],
     handle: "",
     lobby: {
+        firstIter: true,
         playerCount: 0,
         interval: null,
         count: 1000,
@@ -43,8 +44,7 @@ const helpEmbed = new Discord.MessageEmbed()
             .setTimestamp(new Date().getTime())
 
 function getClashPlayers() {
-    let publicHandle = lobbyInfo.handle
-    let data = JSON.stringify([publicHandle])
+    let data = JSON.stringify([lobbyInfo.handle])
 
     let options = {
         hostname: "www.codingame.com",
@@ -62,7 +62,7 @@ function getClashPlayers() {
             let parsedData = JSON.parse(jsonData)
 
             if (parsedData.publicHandle != null) {
-                lobbyInfo.lobby.playerCount = parsedData.players.length
+                lobbyInfo.lobby.playerCount = (parsedData.players && parsedData.players.length) || 0
             }
         })
     })
@@ -77,8 +77,7 @@ function getClashPlayers() {
 }
 
 function leaveClash() {
-    let publicHandle = lobbyInfo.handle
-    let data = JSON.stringify([userId, publicHandle])
+    let data = JSON.stringify([userId, lobbyInfo.handle])
 
     let options = {
         hostname: "www.codingame.com",
@@ -92,9 +91,7 @@ function leaveClash() {
     }
 
     let req = https.request(options, result => {
-        result.on("data", () => {
-            console.log("Successfully left lobby")
-        })
+        result.on("data", () => {})
     })
 
     req.on("error", e => {
@@ -108,8 +105,8 @@ function leaveClash() {
     clearInterval(lobbyInfo.lobby.interval)
     lobbyInfo.lobby.interval = null
     lobbyInfo.lobby.timeLeft = 300000
-    lobbyInfo.url = ""
-    lobbyInfo.host = ""
+    lobbyInfo.lobby.playerCount = 0
+    lobbyInfo.lobby.firstIter = true
 }
 
 function createClash(message, languages, modes, ping) {
@@ -175,15 +172,21 @@ function createClash(message, languages, modes, ping) {
                     clearInterval(lobbyInfo.lobby.interval)
                     lobbyInfo.lobby.interval = null
                     lobbyInfo.lobby.timeLeft = 300000
+                    lobbyInfo.lobby.playerCount = 0
+                    lobbyInfo.lobby.firstIter = true
                 }
 
                 lobbyInfo.lobby.interval = setInterval(() => {
-                    getClashPlayers()
-                    if (lobbyInfo.lobby.playerCount > 1) {
-                        leaveClash()
+                    if (lobbyInfo.lobby.firstIter) {
+                        lobbyInfo.lobby.timeLeft = 300000
+                        lobbyInfo.lobby.playerCount = 0
+                        lobbyInfo.lobby.firstIter = false
+                    } else {
+                        getClashPlayers()
                     }
-                    if (lobbyInfo.lobby.timeLeft <= 0) {
+                    if (lobbyInfo.lobby.playerCount > 1 || lobbyInfo.lobby.timeLeft <= 0) {
                         leaveClash()
+                        return
                     }
                     lobbyInfo.lobby.timeLeft -= lobbyInfo.lobby.count
                     console.log(lobbyInfo.lobby.timeLeft)
