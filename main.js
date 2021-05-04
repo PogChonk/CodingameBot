@@ -17,14 +17,19 @@ const lobbyInfo = {
     modes: [],
     langs: [],
     handle: "",
+    lobby: {
+        playerCount: 0,
+        interval: null,
+        timeLeft: 300000
+    },
     online: {
         started: false,
         finished: false
     }
 }
 
-const availableLangs = ["Bash", "C", "C#", "C++", "Clojure", "D", "Dart", "F#", "Go", "Groovy", "Haskell", "Java", "Javascript", "Kotlin", "Lua", "ObjectiveC", "OCaml", "Pascal", "Perl", "PHP", "Ruby", "Rust", "Scala", "Swift", "TypeScript", "VB.NET", "Python3"]
-const availableModes = ["FASTEST", "SHORTEST", "REVERSE"]
+const availableLangs = ["Bash", "C", "C#", "C++", "Clojure", "D", "Dart", "F#", "Go", "Groovy", "Haskell", "Java", "Javascript", "Kotlin", "Lua", "ObjectiveC", "OCaml", "Pascal", "Perl", "PHP", "Ruby", "Rust", "Scala", "Swift", "TypeScript", "VB.NET", "Python3", "All"]
+const availableModes = ["FASTEST", "SHORTEST", "REVERSE", "ALL"]
 
 const helpEmbed = new Discord.MessageEmbed()
             .setColor("#00e5ff")
@@ -36,8 +41,75 @@ const helpEmbed = new Discord.MessageEmbed()
             .addField("Options", `**Modes**: ${availableModes.join(", ")}\n\n**Languages**: ${availableLangs.join(", ")}`)
             .setTimestamp(new Date().getTime())
 
+function getClashPlayers() {
+    let publicHandle = lobbyInfo.handle
+    let data = JSON.stringify([publicHandle])
+
+    let options = {
+        hostname: "www.codingame.com",
+        path: "/services/ClashOfCode/findClashByHandle",
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Content-Length": data.length,
+            "Cookie": userCookie
+        }
+    }
+
+    let req = https.request(options, result => {
+        result.on("data", jsonData => {
+            let parsedData = JSON.parse(jsonData)
+
+            if (parsedData.publicHandle != null) {
+                lobbyInfo.lobby.playerCount = parsedData.players.length
+            }
+        })
+    })
+
+    req.on("error", e => {
+        console.log("There was an error retrieving the private Clash of Code players!")
+        console.log(e)
+    })
+
+    req.write(data)
+    req.end()
+}
+
+function leaveClash() {
+    let publicHandle = lobbyInfo.handle
+    let data = JSON.stringify([userId, publicHandle])
+
+    let options = {
+        hostname: "www.codingame.com",
+        path: "/services/ClashOfCode/leaveClashByHandle",
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Content-Length": data.length,
+            "Cookie": userCookie
+        }
+    }
+
+    let req = https.request(options, result => {
+        result.on("data", () => {
+            console.log("Successfully left lobby")
+        })
+    })
+
+    req.on("error", e => {
+        console.log("There was an error leaving the lobby!")
+        console.log(e)
+    })
+
+    req.write(data)
+    req.end()
+}
+
 function createClash(message, languages, modes, ping) {
     let data = JSON.stringify([userId, {SHORT: true}, languages, modes])
+
+    if (languages[1] == "All") languages = []
+    if (modes[1] == "ALL") modes = ["FASTEST", "SHORTEST", "REVERSE"]
 
     let options = {
         hostname: "www.codingame.com",
@@ -94,6 +166,18 @@ function createClash(message, languages, modes, ping) {
                         })
                     }
                 })
+
+                if (lobbyInfo.lobby.interval) {
+                    clearInterval(lobbyInfo.lobby.interval)
+                    lobbyInfo.lobby.interval = null
+                }
+
+                lobbyInfo.interval = setInterval(() => {
+                    getClashPlayers()
+                    if (lobbyInfo.playerCount > 1) {
+                        leaveClash()
+                    }
+                }, 5000)
             } else {
                 message.reply("Something went wrong! Make sure there are no spaces between the commas for the languages and modes and double-check your spelling (Case-sensitive for the languages)!")
                 console.log(parsedData)
