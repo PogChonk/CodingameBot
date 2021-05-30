@@ -37,8 +37,8 @@ const helpEmbed = new Discord.MessageEmbed()
             .setColor("#00e5ff")
             .setTitle("Bot Help")
             .addField("Commands", "create, lobby")
-            .addField("Usages", "cg!create languages<array> modes<array>\nCreates a new Codingame lobby with the specified language(s) and mode(s).\n\ncg!lobby\nCheck if there's a current game going on.")
-            .addField("Examples", "cg!create Lua,C++ Fastest,Reverse\ncg!lobby")
+            .addField("Usages", "cg!create languages<array> modes<array> ping<boolean>[Optional]\nCreates a new Codingame lobby with the specified language(s) and mode(s)\n\n**Note**: The ***ping*** argument is completely optional. If it is not specified or false it will not ping players, if it is true then it will ping the `Codingame Player` role.\n\n\ncg!lobby\nCheck if there's a current game going on.")
+            .addField("Examples", "cg!create Lua,C++ Fastest,Reverse true\ncg!lobby")
             .addField("\u200B", "\u200B")
             .addField("Options", `**Modes**: ${availableModes.join(", ")}\n\n**Languages**: ${availableLangs.join(", ")}`)
             .setTimestamp(new Date().getTime())
@@ -160,7 +160,7 @@ function createClash(message, languages, modes, ping) {
                         message.guild.roles.fetch("792963654709805087").then(role => {
                             if (!role) return;
                             role.setMentionable(true).then(() => {
-                                message.channel.send("<@&792963654709805087>").then(() => {
+                                message.channel.send("<@&792963654709805087> - Codingame Time! \nIf you are upset about this ping, you can do one of the following:\n1) Remove the `Codingame Player` role from <#787505471421939712> \n2) Ignore it and supress pings from this channel and/or server \n3) Cry").then(() => {
                                     role.setMentionable(false)
                                 })
                             })
