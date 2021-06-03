@@ -30,8 +30,8 @@ const lobbyInfo = {
     }
 }
 
-const availableLangs = ["Bash", "C", "C#", "C++", "Clojure", "D", "Dart", "F#", "Go", "Groovy", "Haskell", "Java", "Javascript", "Kotlin", "Lua", "ObjectiveC", "OCaml", "Pascal", "Perl", "PHP", "Ruby", "Rust", "Scala", "Swift", "TypeScript", "VB.NET", "Python3"]
-const availableModes = ["FASTEST", "SHORTEST", "REVERSE"]
+const availableLangs = ["Bash", "C", "C#", "C++", "Clojure", "D", "Dart", "F#", "Go", "Groovy", "Haskell", "Java", "Javascript", "Kotlin", "Lua", "ObjectiveC", "OCaml", "Pascal", "Perl", "PHP", "Ruby", "Rust", "Scala", "Swift", "TypeScript", "VB.NET", "Python3", "All"]
+const availableModes = ["FASTEST", "SHORTEST", "REVERSE", "ALL"]
 
 const helpEmbed = new Discord.MessageEmbed()
             .setColor("#00e5ff")
@@ -110,7 +110,12 @@ function leaveClash() {
 }
 
 function createClash(message, languages, modes, ping) {
-    let data = JSON.stringify([userId, {SHORT: true}, languages, modes])
+    let newLang = null
+    let newMode = null
+    if (languages[0] == "All") newLang = []
+    if (modes[0] == "ALL") newMode = []
+
+    let data = JSON.stringify([userId, {SHORT: true}, newLang || languages, newMode || modes])
 
     let options = {
         hostname: "www.codingame.com",
