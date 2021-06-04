@@ -113,7 +113,7 @@ function createClash(message, languages, modes, ping) {
     let newLang = null
     let newMode = null
     if (languages[0] == "All") newLang = []
-    if (modes[0] == "ALL") newMode = []
+    if (modes[0] == "ALL") newMode = ["FASTEST", "SHORTEST", "REVERSE"]
 
     let data = JSON.stringify([userId, {SHORT: true}, newLang || languages, newMode || modes])
 
