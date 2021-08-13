@@ -59,7 +59,7 @@ module.exports = (message, languages, modes, ping) => {
                         message.guild.roles.fetch("792963654709805087").then(role => {
                             if (!role) return;
                             role.setMentionable(true).then(() => {
-                                message.channel.send("<@&792963654709805087> - Codingame Time! \nIf you are upset about this ping, you can do any of the following:\n1) Remove the `Codingame Player` role from <#787505471421939712> \n2) Ignore it and supress pings from this channel and/or server \n3) Cry").then(msg => {
+                                message.channel.send("<@&792963654709805087> - Codingame Time! \nIf you are upset about this ping, you can do any of the following:\n`1)` Remove the `Codingame Player` role by heading on over to <#424636584609054721> and using the command `/role category:Extras`\n`2)` Ignore it and supress pings from this channel and/or server \n`3)` Cry").then(msg => {
                                     role.setMentionable(false)
                                     msg.react("😭")
                                 })
