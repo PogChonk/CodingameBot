@@ -9,7 +9,7 @@ module.exports = (message, languages, modes, ping) => {
     if (languages[0] == "All") newLang = []
     if (modes[0] == "ALL") newMode = ["FASTEST", "SHORTEST", "REVERSE"]
 
-    let data = JSON.stringify([info.userId, {SHORT: true}, newLang || languages, newMode || modes])
+    let data = JSON.stringify([info.userId, newLang || languages, newMode || modes])
 
     let options = {
         hostname: "www.codingame.com",
