@@ -17,7 +17,7 @@ module.exports = () => {
 
     let req = https.request(options, result => {
         result.on("data", jsonData => {
-            let parsedData = JSON.parse(jsonData.slice(0, jsonData.length - 43) + "}")
+            let parsedData = JSON.parse(jsonData)
             console.log(parsedData)
 
             if (parsedData.publicHandle != null) {
@@ -32,5 +32,7 @@ module.exports = () => {
     })
 
     req.write(data)
+    req.read()
+    req.resume()
     req.end()
 }
