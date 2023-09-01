@@ -17,8 +17,8 @@ module.exports = () => {
 
     let req = https.request(options, result => {
         result.on("data", jsonData => {
-            console.log(jsonData)
-            let parsedData = JSON.parse(jsonData)
+            // let parsedData = JSON.parse(jsonData)
+            let parsedData = JSON.parse(String.fromCodePoint(jsonData._readableState.buffer.head.data)).value
             console.log(parsedData)
 
             if (parsedData.publicHandle != null) {
