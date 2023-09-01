@@ -23,7 +23,6 @@ module.exports = () => {
 
         result.on("end", () => {
             let parsedData = JSON.parse(jsonData)
-            console.log(parsedData)
             
             if (parsedData.publicHandle != null) {
                 info.lobbyInfo.lobby.playerCount = (parsedData.players && parsedData.players.length) || 0
