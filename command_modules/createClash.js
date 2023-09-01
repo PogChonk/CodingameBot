@@ -23,9 +23,15 @@ module.exports = (message, languages, modes, ping) => {
     }
 
     let req = https.request(options, result => {
-        result.on("data", jsonData => {
-            let parsedData = JSON.parse(jsonData)
+        let jsonData = ""
+        
+        result.on("data", jsonChunk => {
+            jsonData += jsonChunk
+        })
 
+        result.on("end", () => {
+            let parsedData = JSON.parse(jsonData)
+            
             if (parsedData.publicHandle != null) {
                 info.lobbyInfo.date = new Date().getTime()
                 info.lobbyInfo.host = message.member.nickname || message.author.username
