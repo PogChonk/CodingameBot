@@ -18,7 +18,7 @@ module.exports = (message, languages, modes, ping) => {
         headers: {
             "Content-Type": "application/json",
             "Content-Length": data.length,
-            "Cookie": info.awsalb + info.awsalbcors
+            "Cookie": info.token
         }
     }
 
