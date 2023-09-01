@@ -2,6 +2,7 @@ module.exports = {
     prefix: "cg!",
     token: process.env.token,
     modules: "./command_modules/",
+    cookie: process.env.cookie,
     userId: process.env.userid,
     codingameLogo: "https://images.ctfassets.net/3ouphkrynjol/X0zs5QUToOY4OAssWIKiC/45499972ddf75d54b0b59b1a07594805/codingame.com.png",
     baseLink: "https://www.codingame.com/clashofcode/clash",
