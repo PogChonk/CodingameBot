@@ -16,10 +16,15 @@ module.exports = () => {
     }
 
     let req = https.request(options, result => {
-        result.on("data", jsonData => {
+        let jsonData = ""
+        result.on("data", jsonChunk => {
+            jsonData += jsonChunk
+        })
+
+        result.on("end", () => {
             let parsedData = JSON.parse(jsonData)
             console.log(parsedData)
-
+            
             if (parsedData.publicHandle != null) {
                 info.lobbyInfo.lobby.playerCount = (parsedData.players && parsedData.players.length) || 0
             }
@@ -32,7 +37,5 @@ module.exports = () => {
     })
 
     req.write(data)
-    req.read()
-    req.resume()
     req.end()
 }
