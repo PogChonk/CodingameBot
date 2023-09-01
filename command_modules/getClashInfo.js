@@ -16,7 +16,13 @@ module.exports = (message, publicHandle) => {
     }
 
     let req = https.request(options, result => {
-        result.on("data", jsonData => {
+        let jsonData = ""
+        
+        result.on("data", jsonChunk => {
+            jsonData += jsonChunk
+        })
+
+        result.on("end", () => {
             let parsedData = JSON.parse(jsonData)
 
             if (parsedData.publicHandle != null) {
