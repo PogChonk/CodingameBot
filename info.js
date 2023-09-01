@@ -1,6 +1,6 @@
 module.exports = {
     prefix: "cg!",
-    remember_me_token: process.env.remember_me,
+    token: process.env.token,
     modules: "./command_modules/",
     userId: process.env.userid,
     codingameLogo: "https://images.ctfassets.net/3ouphkrynjol/X0zs5QUToOY4OAssWIKiC/45499972ddf75d54b0b59b1a07594805/codingame.com.png",
