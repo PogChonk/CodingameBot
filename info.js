@@ -1,9 +1,7 @@
 module.exports = {
     prefix: "cg!",
-    token: process.env.token,
+    remember_me_token: process.env.remember_me,
     modules: "./command_modules/",
-    awsalb: process.env.awsalb,
-    awsalbcors: process.env.awsalbcors,
     userId: process.env.userid,
     codingameLogo: "https://images.ctfassets.net/3ouphkrynjol/X0zs5QUToOY4OAssWIKiC/45499972ddf75d54b0b59b1a07594805/codingame.com.png",
     baseLink: "https://www.codingame.com/clashofcode/clash",
