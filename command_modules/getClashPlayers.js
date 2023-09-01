@@ -17,7 +17,13 @@ module.exports = () => {
 
     let req = https.request(options, result => {
         result.on("data", jsonData => {
-            let parsedData = JSON.parse(jsonData)
+            let parsedData = null
+
+            try {
+                parsedData = JSON.parse(jsonData)
+            } catch(e) {
+                parsedData = JSON.parse(jsonData + "}")
+            }
 
             if (parsedData.publicHandle != null) {
                 info.lobbyInfo.lobby.playerCount = (parsedData.players && parsedData.players.length) || 0
