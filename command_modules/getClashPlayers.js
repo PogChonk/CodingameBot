@@ -22,7 +22,8 @@ module.exports = () => {
             try {
                 parsedData = JSON.parse(jsonData)
             } catch(e) {
-                parsedData = JSON.parse(jsonData + "}")
+                jsonData = jsonData.slice(0, jsonData.length - 8)
+                parsedData = JSON.parse(jsonData)
             }
 
             if (parsedData.publicHandle != null) {
