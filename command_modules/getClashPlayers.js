@@ -22,7 +22,7 @@ module.exports = () => {
             try {
                 parsedData = JSON.parse(jsonData)
             } catch(e) {
-                jsonData = jsonData.slice(0, jsonData.length - 8)
+                jsonData = jsonData.slice(0, jsonData.length - 8) + "}"
                 parsedData = JSON.parse(jsonData)
             }
 
