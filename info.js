@@ -5,7 +5,7 @@ module.exports = {
     userCookie: process.env.userCookie,
     userId: process.env.userid,
     codingameLogo: "https://images.ctfassets.net/3ouphkrynjol/X0zs5QUToOY4OAssWIKiC/45499972ddf75d54b0b59b1a07594805/codingame.com.png",
-    baseLink: "https://www.codingame.com/clashofcode/clash",
+    baseLink: "https://www.codingame.com/clashofcode/clash/",
     availableLangs: ["Bash", "C", "C#", "C++", "Clojure", "D", "Dart", "F#", "Go", "Groovy", "Haskell", "Java", "Javascript", "Kotlin", "Lua", "ObjectiveC", "OCaml", "Pascal", "Perl", "PHP", "Ruby", "Rust", "Scala", "Swift", "TypeScript", "VB.NET", "Python3", "All"],
     availableModes: ["FASTEST", "SHORTEST", "REVERSE", "ALL"],
 
